@@ -97,8 +97,10 @@ function normalizePayload(raw) {
     );
   }
   return data.applications.map((row, i) => {
-    if (!row.company || !row.roleTitle) {
-      throw new Error(`applications[${i}]: company and roleTitle are required`);
+    if (!row.company || !row.roleTitle || !row.industry) {
+      throw new Error(
+        `applications[${i}]: company, roleTitle, and industry are required`,
+      );
     }
     const status = row.status ?? "wishlist";
     if (!STATUSES.has(status)) {
@@ -109,6 +111,7 @@ function normalizePayload(raw) {
     return {
       company: String(row.company),
       roleTitle: String(row.roleTitle),
+      industry: String(row.industry),
       location: row.location ?? null,
       jobUrl: row.jobUrl || null,
       status,
@@ -156,6 +159,7 @@ async function importOne(base, app, dryRun) {
     body: JSON.stringify({
       company: app.company,
       roleTitle: app.roleTitle,
+      industry: app.industry,
       location: app.location,
       jobUrl: app.jobUrl,
       status: app.status,

@@ -8,9 +8,10 @@ import { cn } from "@/lib/utils";
 type Props = {
   application: Application;
   reminders: Reminder[];
+  onDelete?: (id: string) => Promise<void>;
 };
 
-export function KanbanCard({ application, reminders }: Props) {
+export function KanbanCard({ application, reminders, onDelete }: Props) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: application.id });
 
@@ -48,6 +49,10 @@ export function KanbanCard({ application, reminders }: Props) {
             <p className="mt-0.5 text-sm text-[var(--color-ink-muted)]">
               {application.roleTitle}
             </p>
+            <p className="mt-0.5 text-xs text-[var(--color-ink-muted)]">
+              {application.industry}
+              {application.salaryRange ? ` · ${application.salaryRange}` : ""}
+            </p>
           </div>
           {dueSoon ? (
             <span className="shrink-0 rounded bg-[var(--color-warn-soft)] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[var(--color-warn)]">
@@ -65,6 +70,21 @@ export function KanbanCard({ application, reminders }: Props) {
           </p>
         ) : null}
       </Link>
+      {onDelete ? (
+        <button
+          type="button"
+          className="mt-2 text-xs text-[var(--color-danger)] hover:underline"
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            if (!confirm(`Delete ${application.company}?`)) return;
+            void onDelete(application.id);
+          }}
+          onPointerDown={(e) => e.stopPropagation()}
+        >
+          Delete
+        </button>
+      ) : null}
     </div>
   );
 }

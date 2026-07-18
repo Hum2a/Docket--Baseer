@@ -71,7 +71,7 @@ describe.runIf(hasDb)("RLS isolation (live DB)", () => {
       for (const id of [userA, userB]) {
         await db
           .insert(schema.user)
-          .values({ id, name: id, email: `${id}@test.local`, emailVerified: true })
+          .values({ id, name: id, email: `${id}@test.local` })
           .onConflictDoNothing();
       }
 
@@ -84,6 +84,7 @@ describe.runIf(hasDb)("RLS isolation (live DB)", () => {
           ownerId: userB,
           company: "Secret Co",
           roleTitle: "Hidden",
+          industry: "Technology",
           status: "wishlist",
         })
         .returning();

@@ -51,6 +51,7 @@ app.post("/", async (c) => {
         ownerId: userId,
         company: body.company,
         roleTitle: body.roleTitle,
+        industry: body.industry,
         location: body.location ?? null,
         jobUrl: body.jobUrl || null,
         status: body.status ?? "wishlist",
@@ -74,6 +75,7 @@ app.patch("/:id", async (c) => {
   };
   if (body.company !== undefined) patch.company = body.company;
   if (body.roleTitle !== undefined) patch.roleTitle = body.roleTitle;
+  if (body.industry !== undefined) patch.industry = body.industry;
   if (body.location !== undefined) patch.location = body.location ?? null;
   if (body.jobUrl !== undefined) patch.jobUrl = body.jobUrl || null;
   if (body.status !== undefined) patch.status = body.status;

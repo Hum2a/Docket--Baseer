@@ -11,4 +11,10 @@ export type Env = {
   R2_ACCESS_KEY_ID?: string;
   R2_SECRET_ACCESS_KEY?: string;
   R2_BUCKET_NAME?: string;
+  /** Resend API key for daily reminder digests (Worker secret). */
+  RESEND_API_KEY?: string;
+  /** Digest recipient (default baseer@baseer.co.uk). */
+  REMINDER_EMAIL_TO?: string;
+  /** Verified From header, e.g. Docket <reminders@baseer.co.uk>. */
+  REMINDER_EMAIL_FROM?: string;
 };

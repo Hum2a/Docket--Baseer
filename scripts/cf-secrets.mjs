@@ -52,7 +52,7 @@ function loadLocalEnv() {
 }
 
 /** Secrets that must not live in wrangler.toml [vars]. */
-const SECRET_KEYS = ["DATABASE_URL"];
+const SECRET_KEYS = ["DATABASE_URL", "RESEND_API_KEY"];
 
 function putSecret(name, value) {
   console.log(`  putting ${name} → env.${envName} …`);
@@ -100,5 +100,6 @@ if (!put) {
 }
 
 console.log(`\nDone — ${put} secret(s) set on docket-api (${envName}).`);
-console.log("Non-secret vars (APP_URL, API_URL, OWNER_ID) come from wrangler.toml.\n");
+console.log("Non-secret vars (APP_URL, API_URL, OWNER_ID, REMINDER_EMAIL_*) come from wrangler.toml.");
+console.log("Optional: set RESEND_API_KEY in .env / .dev.vars for daily reminder digests.\n");
 console.log("Next: npm run deploy:production  (or deploy:staging)\n");

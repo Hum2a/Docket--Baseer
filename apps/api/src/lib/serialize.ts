@@ -15,6 +15,7 @@ export function serializeApplication(row: AppRow) {
     ownerId: row.ownerId,
     company: row.company,
     roleTitle: row.roleTitle,
+    industry: row.industry,
     location: row.location,
     jobUrl: row.jobUrl,
     status: row.status,

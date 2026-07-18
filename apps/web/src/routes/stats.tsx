@@ -21,8 +21,11 @@ export function StatsPage() {
   return (
     <div className="space-y-6">
       <h2 className="font-display text-2xl">Stats</h2>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Stat tile="Total" value={String(stats.total)} />
+        <Stat tile="Open pipeline" value={String(stats.openPipeline)} />
+        <Stat tile="Avg / week" value={String(stats.avgPerWeek)} />
+        <Stat tile="Reminders open" value={String(stats.reminders.open)} />
         {applicationStatuses.map((s) => (
           <Stat key={s} tile={s} value={String(stats.byStatus[s] ?? 0)} />
         ))}

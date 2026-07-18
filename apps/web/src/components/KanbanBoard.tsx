@@ -24,6 +24,7 @@ type Props = {
   applications: Application[];
   reminders: Reminder[];
   onStatusChange: (id: string, status: ApplicationStatus) => Promise<void>;
+  onDelete?: (id: string) => Promise<void>;
 };
 
 const colBg: Record<ApplicationStatus, string> = {
@@ -39,11 +40,13 @@ function Column({
   label,
   items,
   reminders,
+  onDelete,
 }: {
   status: ApplicationStatus;
   label: string;
   items: Application[];
   reminders: Reminder[];
+  onDelete?: (id: string) => Promise<void>;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: status });
   return (
@@ -62,7 +65,12 @@ function Column({
       <SortableContext items={items.map((i) => i.id)} strategy={verticalListSortingStrategy}>
         <div className="flex flex-col gap-2">
           {items.map((app) => (
-            <KanbanCard key={app.id} application={app} reminders={reminders} />
+            <KanbanCard
+              key={app.id}
+              application={app}
+              reminders={reminders}
+              onDelete={onDelete}
+            />
           ))}
         </div>
       </SortableContext>
@@ -70,7 +78,7 @@ function Column({
   );
 }
 
-export function KanbanBoard({ applications, reminders, onStatusChange }: Props) {
+export function KanbanBoard({ applications, reminders, onStatusChange, onDelete }: Props) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
 
@@ -130,11 +138,14 @@ export function KanbanBoard({ applications, reminders, onStatusChange }: Props) 
             label={col.label}
             items={byStatus[col.status]}
             reminders={reminders}
+            onDelete={onDelete}
           />
         ))}
       </div>
       <DragOverlay>
-        {active ? <KanbanCard application={active} reminders={reminders} /> : null}
+        {active ? (
+          <KanbanCard application={active} reminders={reminders} onDelete={onDelete} />
+        ) : null}
       </DragOverlay>
     </DndContext>
   );
