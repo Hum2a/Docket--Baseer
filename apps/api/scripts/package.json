@@ -1,0 +1,9 @@
+{
+  "name": "docket-sync-scripts",
+  "private": true,
+  "type": "module",
+  "description": "Standalone deps for sync-tracker.mjs. Deliberately NOT part of the npm workspaces list (root package.json only globs apps/* and packages/*, not apps/*/scripts), so installing here never touches wrangler/workerd — avoids the Windows-ARM64 workerd install failure.",
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.1"
+  }
+}

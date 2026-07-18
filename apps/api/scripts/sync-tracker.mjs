@@ -144,6 +144,19 @@ function parseDateOrNull(raw) {
   return Number.isNaN(d.getTime()) ? null : d.toISOString();
 }
 
+async function ensureSchemaExists() {
+  const rows = await sql`SELECT to_regclass('public.applications') AS reg`;
+  if (!rows[0]?.reg) {
+    console.error(
+      'The "applications" table doesn\'t exist in this database yet.\n' +
+        "Run migrations first, from apps/api:\n" +
+        "  npm run db:migrate\n" +
+        "Then re-run: npm run db:sync",
+    );
+    process.exit(1);
+  }
+}
+
 async function ensureOwner() {
   const rows = await sql`SELECT id FROM "user" WHERE id = ${OWNER_ID} LIMIT 1`;
   if (rows.length === 0) {
@@ -224,6 +237,7 @@ async function main() {
     process.exit(1);
   }
 
+  await ensureSchemaExists();
   await ensureOwner();
 
   let inserted = 0;
