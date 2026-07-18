@@ -9,15 +9,15 @@ Every application table includes `owner_id` referencing `user.id` and has RLS en
 - `reminders`
 - `documents`
 
-Better Auth tables (`user`, `session`, `account`, `verification`) are managed by the auth library; app data always carries `owner_id`.
+A single `user` row anchors `owner_id` foreign keys. There is no login — the Worker uses env `OWNER_ID`.
 
 ## Policy helper
 
 Policies use Drizzle's Neon helpers (`enableRLS`, `crudPolicy`) with the `authenticated` role. Anonymous role has no access to app tables.
 
-## Session → Postgres claim
+## OWNER_ID → Postgres claim
 
-The Worker maps the Better Auth session `user.id` into the Neon JWT / `SET` claim used by `auth.user_id()` before running queries. Isolation is proven by `npm run test:rls`.
+The Worker maps `OWNER_ID` into the Neon JWT / `SET` claim used by `auth.user_id()` before running queries. Isolation is proven by `npm run test:rls`.
 
 ## Cascades
 

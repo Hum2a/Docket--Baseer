@@ -14,18 +14,17 @@ if (!databaseUrl) {
   process.exit(1);
 }
 
+const ownerId = process.env.OWNER_ID ?? "seed-user-baseer";
 const sql = neon(databaseUrl);
 const db = drizzle(sql, { schema });
 
 async function main() {
-  const ownerId = "seed-user-baseer";
   const existing = await db.select().from(schema.user).where(eq(schema.user.id, ownerId));
   if (existing.length === 0) {
     await db.insert(schema.user).values({
       id: ownerId,
       name: "Baseer",
-      email: "baseer@example.com",
-      emailVerified: true,
+      email: "baseer@baseer.co.uk",
     });
   }
 
@@ -63,7 +62,7 @@ async function main() {
     }
   }
 
-  console.log("Seed complete (user: baseer@example.com / id: seed-user-baseer).");
+  console.log(`Seed complete (OWNER_ID=${ownerId}).`);
 }
 
 main().catch((err) => {

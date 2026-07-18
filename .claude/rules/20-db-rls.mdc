@@ -8,6 +8,6 @@ alwaysApply: false
 
 - Neon Postgres via Hyperdrive; Drizzle ORM only — no raw SQL in route handlers
 - Every app table: `owner_id`, `enableRLS()`, `crudPolicy` / `pgPolicy` for `authenticated`
-- Map Better Auth session user id to `auth.user_id()`; prove isolation in `test:rls`
+- Map fixed `OWNER_ID` to `auth.user_id()`; prove isolation in `test:rls`
 - Pool Hyperdrive connections; never open a new client per request
 - Cascade delete notes/reminders with applications; documents `application_id` SET NULL

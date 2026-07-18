@@ -25,10 +25,6 @@ npm run dev
 | Sync agent rules | `npm run rules:sync` |
 | Full gate | `npm run ship-it` |
 
-## Auth cookie issues
-
-If sessions do not stick across Pages/Workers, verify `COOKIE_DOMAIN` matches the app host (`jobtracker.baseer.co.uk` or `jobtracker-staging.baseer.co.uk`), not the API host.
-
 ## R2
 
 Buckets stay private. Only short-lived (5–10 min) signed URLs from `apps/api/src/lib/r2.ts`.

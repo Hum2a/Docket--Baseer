@@ -43,7 +43,7 @@ export async function createPresignedUrl(
   }
 
   // Local / binding-only: return Worker-mediated proxy URL (auth required by caller).
-  const base = env.BETTER_AUTH_URL.replace(/\/$/, "");
+  const base = env.API_URL.replace(/\/$/, "");
   const kind = options.method === "PUT" ? "upload" : "download";
   const url = `${base}/api/documents/proxy/${kind}?key=${encodeURIComponent(options.key)}`;
   return { url, expiresIn };

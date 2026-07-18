@@ -3,20 +3,12 @@ main = "src/index.ts"
 compatibility_date = "2025-06-01"
 compatibility_flags = ["nodejs_compat"]
 
-# better-auth nests @better-auth/drizzle-adapter; Wrangler can't resolve
-# drizzle-orm from that nested package without an explicit alias.
-[alias]
-"drizzle-orm" = "./node_modules/drizzle-orm"
-
 [vars]
 APP_URL = "http://localhost:5173"
-COOKIE_DOMAIN = "localhost"
-BETTER_AUTH_URL = "http://localhost:8787"
-# DATABASE_URL and BETTER_AUTH_SECRET live in .dev.vars (gitignored).
-# Do not put DB passwords in this file — use:
-#   local:     apps/api/.dev.vars
-#   deployed:  wrangler secret put DATABASE_URL
-#              (or Hyperdrive binding below)
+API_URL = "http://localhost:8787"
+OWNER_ID = "seed-user-baseer"
+# DATABASE_URL lives in .dev.vars (gitignored).
+# Deployed: wrangler secret put DATABASE_URL (or Hyperdrive binding below)
 
 [[r2_buckets]]
 binding = "DOCUMENTS"
@@ -27,11 +19,10 @@ preview_bucket_name = "docket-documents-dev"
 # [[hyperdrive]]
 # binding = "HYPERDRIVE"
 # id = "REPLACE_LOCAL_OR_DEV_HYPERDRIVE_ID"
-# localConnectionString = "postgresql://..."  # optional local override via wrangler; still prefer .dev.vars
 
 [env.staging]
 name = "docket-api-staging"
-vars = { APP_URL = "https://jobtracker-staging.baseer.co.uk", COOKIE_DOMAIN = "jobtracker-staging.baseer.co.uk", BETTER_AUTH_URL = "https://jobtracker-api-staging.baseer.co.uk" }
+vars = { APP_URL = "https://jobtracker-staging.baseer.co.uk", API_URL = "https://jobtracker-api-staging.baseer.co.uk", OWNER_ID = "seed-user-baseer" }
 routes = [{ pattern = "jobtracker-api-staging.baseer.co.uk", custom_domain = true }]
 
 [[env.staging.r2_buckets]]
@@ -44,7 +35,7 @@ bucket_name = "docket-documents-staging"
 
 [env.production]
 name = "docket-api"
-vars = { APP_URL = "https://jobtracker.baseer.co.uk", COOKIE_DOMAIN = "jobtracker.baseer.co.uk", BETTER_AUTH_URL = "https://jobtracker-api.baseer.co.uk" }
+vars = { APP_URL = "https://jobtracker.baseer.co.uk", API_URL = "https://jobtracker-api.baseer.co.uk", OWNER_ID = "seed-user-baseer" }
 routes = [{ pattern = "jobtracker-api.baseer.co.uk", custom_domain = true }]
 
 [[env.production.r2_buckets]]

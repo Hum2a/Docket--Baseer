@@ -2,8 +2,8 @@ import { Hono } from "hono";
 import { and, desc, eq } from "drizzle-orm";
 import { createDocumentSchema } from "@docket/shared";
 import type { Env } from "../env";
-import type { AppVariables } from "../middleware/session";
-import { requireSession } from "../middleware/session";
+import type { AppVariables } from "../middleware/owner";
+import { withOwner } from "../middleware/owner";
 import { withOwnerRls } from "../db/client";
 import { documents } from "../db/schema";
 import { buildObjectKey, createPresignedUrl } from "../lib/r2";
@@ -11,7 +11,7 @@ import { serializeDocument } from "../lib/serialize";
 
 const app = new Hono<{ Bindings: Env; Variables: AppVariables }>();
 
-app.use("*", requireSession);
+app.use("*", withOwner);
 
 /** Private binding proxy when S3 credentials are not configured. */
 app.put("/proxy/upload", async (c) => {

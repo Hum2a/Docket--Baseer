@@ -4,7 +4,7 @@ Personal job application tracker for Baseer — kanban board, list view, notes/r
 
 ## Stack
 
-React 19 + Vite · Hono on Cloudflare Workers · Neon Postgres (Hyperdrive + Drizzle + RLS) · Better Auth · R2
+React 19 + Vite · Hono on Cloudflare Workers · Neon Postgres (Hyperdrive + Drizzle + RLS) · R2 · no login (fixed OWNER_ID)
 
 ## Quick start
 

@@ -1,8 +1,6 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import type { Env } from "./env";
-import { createAuth } from "./lib/auth";
-import { createDb } from "./db/client";
 import applications from "./routes/applications";
 import notes from "./routes/notes";
 import reminders from "./routes/reminders";
@@ -25,16 +23,6 @@ app.use(
 );
 
 app.get("/health", (c) => c.json({ ok: true, service: "docket-api" }));
-
-app.on(["GET", "POST"], "/api/auth/*", async (c) => {
-  const { db, pool } = createDb(c.env);
-  try {
-    const auth = createAuth(c.env, db);
-    return await auth.handler(c.req.raw);
-  } finally {
-    c.executionCtx.waitUntil(pool.end());
-  }
-});
 
 app.route("/api/applications", applications);
 app.route("/api/notes", notes);

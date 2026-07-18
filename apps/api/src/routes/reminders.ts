@@ -2,15 +2,15 @@ import { Hono } from "hono";
 import { and, asc, eq } from "drizzle-orm";
 import { createReminderSchema, updateReminderSchema } from "@docket/shared";
 import type { Env } from "../env";
-import type { AppVariables } from "../middleware/session";
-import { requireSession } from "../middleware/session";
+import type { AppVariables } from "../middleware/owner";
+import { withOwner } from "../middleware/owner";
 import { withOwnerRls } from "../db/client";
 import { applications, reminders } from "../db/schema";
 import { serializeReminder } from "../lib/serialize";
 
 const app = new Hono<{ Bindings: Env; Variables: AppVariables }>();
 
-app.use("*", requireSession);
+app.use("*", withOwner);
 
 app.get("/", async (c) => {
   const userId = c.get("userId");

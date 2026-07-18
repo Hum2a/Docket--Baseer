@@ -3,38 +3,21 @@ import {
   createRootRoute,
   createRoute,
   createRouter,
-  redirect,
 } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
-import { authClient } from "@/lib/auth-client";
 import { BoardPage } from "@/routes/board";
 import { ListPage } from "@/routes/list";
 import { StatsPage } from "@/routes/stats";
 import { SettingsPage } from "@/routes/settings";
 import { ApplicationPage } from "@/routes/application";
-import { LoginPage } from "@/routes/login";
-
-async function requireAuth() {
-  const session = await authClient.getSession();
-  if (!session.data?.user) {
-    throw redirect({ to: "/login" });
-  }
-}
 
 const rootRoute = createRootRoute({
   component: () => <Outlet />,
 });
 
-const loginRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/login",
-  component: LoginPage,
-});
-
 const appRoute = createRoute({
   getParentRoute: () => rootRoute,
   id: "app",
-  beforeLoad: requireAuth,
   component: () => (
     <AppShell>
       <Outlet />
@@ -76,7 +59,6 @@ const applicationRoute = createRoute({
 });
 
 const routeTree = rootRoute.addChildren([
-  loginRoute,
   appRoute.addChildren([
     boardRoute,
     listRoute,

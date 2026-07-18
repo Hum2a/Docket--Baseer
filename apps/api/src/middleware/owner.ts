@@ -1,6 +1,5 @@
 import { createMiddleware } from "hono/factory";
 import type { Env } from "../env";
-import { createAuth } from "../lib/auth";
 import { createDb, type Database } from "../db/client";
 
 export type AppVariables = {
@@ -8,20 +7,21 @@ export type AppVariables = {
   db: Database;
 };
 
-export const requireSession = createMiddleware<{
+/** Attach DB + fixed OWNER_ID — no authentication. */
+export const withOwner = createMiddleware<{
   Bindings: Env;
   Variables: AppVariables;
 }>(async (c, next) => {
-  const { db, pool } = createDb(c.env);
-  try {
-    const auth = createAuth(c.env, db);
-    const session = await auth.api.getSession({ headers: c.req.raw.headers });
-    if (!session?.user?.id) {
-      return c.json({ error: "Unauthorized" }, 401);
-    }
+  const ownerId = c.env.OWNER_ID;
+  if (!ownerId) {
+    return c.json({ error: "OWNER_ID is not configured" }, 500);
+  }
 
-    c.set("userId", session.user.id);
-    c.set("db", db);
+  const { db, pool } = createDb(c.env);
+  c.set("userId", ownerId);
+  c.set("db", db);
+
+  try {
     await next();
   } finally {
     c.executionCtx.waitUntil(pool.end());

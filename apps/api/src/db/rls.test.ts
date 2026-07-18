@@ -34,8 +34,8 @@ describe("RLS schema", () => {
 });
 
 describe("auth.user_id mapping contract", () => {
-  it("documents Better Auth session id → JWT sub claim", () => {
-    // withOwnerRls sets request.jwt.claim.sub to the Better Auth user id.
+  it("maps fixed OWNER_ID → JWT sub claim for RLS", () => {
+    // withOwnerRls sets request.jwt.claim.sub to Env.OWNER_ID.
     // Policies compare owner_id to auth.user_id(), which reads that claim.
     expect(migration).toContain("auth.user_id()");
   });

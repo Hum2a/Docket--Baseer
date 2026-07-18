@@ -2,15 +2,15 @@ import { Hono } from "hono";
 import { and, desc, eq } from "drizzle-orm";
 import { createNoteSchema } from "@docket/shared";
 import type { Env } from "../env";
-import type { AppVariables } from "../middleware/session";
-import { requireSession } from "../middleware/session";
+import type { AppVariables } from "../middleware/owner";
+import { withOwner } from "../middleware/owner";
 import { withOwnerRls } from "../db/client";
 import { applications, notes } from "../db/schema";
 import { serializeNote } from "../lib/serialize";
 
 const app = new Hono<{ Bindings: Env; Variables: AppVariables }>();
 
-app.use("*", requireSession);
+app.use("*", withOwner);
 
 app.get("/application/:applicationId", async (c) => {
   const userId = c.get("userId");

@@ -43,6 +43,6 @@ Use Cloudflare API credentials for the **baseer.co.uk** account (`CLOUDFLARE_API
 
 Set via Cloudflare dashboard / `wrangler secret put` and GitHub Actions secrets:
 
-- `BETTER_AUTH_SECRET`
+- `DATABASE_URL` (or Hyperdrive)
+- `OWNER_ID` (defaults to `seed-user-baseer` in wrangler vars)
 - Hyperdrive config IDs
-- Database URLs for migrate/seed jobs

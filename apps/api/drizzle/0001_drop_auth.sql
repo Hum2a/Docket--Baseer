@@ -1,0 +1,6 @@
+DROP TABLE IF EXISTS "session";
+DROP TABLE IF EXISTS "account";
+DROP TABLE IF EXISTS "verification";
+
+ALTER TABLE "user" DROP COLUMN IF EXISTS "email_verified";
+ALTER TABLE "user" DROP COLUMN IF EXISTS "image";

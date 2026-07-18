@@ -1,2 +1,2 @@
-BETTER_AUTH_SECRET=dev-secret-change-me-please-32chars
 DATABASE_URL=postgres://user:pass@localhost:5432/docket
+OWNER_ID=seed-user-baseer

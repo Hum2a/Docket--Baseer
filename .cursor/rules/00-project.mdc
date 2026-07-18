@@ -6,7 +6,7 @@ alwaysApply: true
 
 # Docket project
 
-Personal job application tracker for Baseer. Standalone: own DB, own auth, own deployment.
+Personal job application tracker for Baseer. Standalone: own DB, no login (fixed OWNER_ID), own deployment.
 
 - Domains: `jobtracker.baseer.co.uk` / `jobtracker-staging.baseer.co.uk`
 - API: `jobtracker-api.baseer.co.uk` / `jobtracker-api-staging.baseer.co.uk`

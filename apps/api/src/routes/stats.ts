@@ -1,15 +1,15 @@
 import { Hono } from "hono";
 import { applicationStatuses, type ApplicationStatus } from "@docket/shared";
 import type { Env } from "../env";
-import type { AppVariables } from "../middleware/session";
-import { requireSession } from "../middleware/session";
+import type { AppVariables } from "../middleware/owner";
+import { withOwner } from "../middleware/owner";
 import { withOwnerRls } from "../db/client";
 import { applications } from "../db/schema";
 import { eq } from "drizzle-orm";
 
 const app = new Hono<{ Bindings: Env; Variables: AppVariables }>();
 
-app.use("*", requireSession);
+app.use("*", withOwner);
 
 app.get("/", async (c) => {
   const userId = c.get("userId");
