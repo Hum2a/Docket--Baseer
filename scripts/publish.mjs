@@ -17,27 +17,45 @@ if (!target || !["staging", "production"].includes(target)) {
   process.exit(1);
 }
 
-function run(cmd, args, opts = {}) {
-  console.log(`\n> ${cmd} ${args.join(" ")}\n`);
-  const result = spawnSync(cmd, args, {
+function runNode(scriptPath, args) {
+  console.log(`\n> node ${scriptPath} ${args.join(" ")}\n`);
+  const result = spawnSync(process.execPath, [scriptPath, ...args], {
     cwd: root,
     stdio: "inherit",
-    shell: process.platform === "win32",
+    shell: false,
     env: process.env,
-    ...opts,
   });
-  if (result.status !== 0) {
-    process.exit(result.status ?? 1);
+  if (result.error) {
+    console.error(result.error);
+    process.exit(1);
   }
+  if (result.status !== 0) process.exit(result.status ?? 1);
+}
+
+function runNpm(args) {
+  console.log(`\n> npm ${args.join(" ")}\n`);
+  // On Windows, npm is a .cmd shim and needs shell:true.
+  // Do not put spaced filesystem paths in the command string — only in cwd.
+  const result = spawnSync("npm", args, {
+    cwd: root,
+    stdio: "inherit",
+    shell: true,
+    env: process.env,
+  });
+  if (result.error) {
+    console.error(result.error);
+    process.exit(1);
+  }
+  if (result.status !== 0) process.exit(result.status ?? 1);
 }
 
 console.log(`\nDocket publish → ${target}\n`);
 
-run("node", [join(root, "scripts/cf-secrets.mjs"), target]);
-run("npm", ["run", `deploy:${target}`, "--workspace=@docket/api"]);
-run("npm", ["run", `deploy:${target}`, "--workspace=@docket/web"]);
-run("npm", ["run", "db:migrate"]);
-run("npm", ["run", "db:seed"]);
+runNode(join(root, "scripts", "cf-secrets.mjs"), [target]);
+runNpm(["run", `deploy:${target}`, "--workspace=@docket/api"]);
+runNpm(["run", `deploy:${target}`, "--workspace=@docket/web"]);
+runNpm(["run", "db:migrate"]);
+runNpm(["run", "db:seed"]);
 
 console.log(`\nPublished ${target}.`);
 console.log("API secrets are on the Worker; migrate/seed used local DATABASE_URL (same Neon).");
