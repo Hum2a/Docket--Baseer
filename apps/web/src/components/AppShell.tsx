@@ -16,10 +16,23 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="mx-auto min-h-screen max-w-7xl px-4 py-6 md:px-6">
       <header className="enter-up mb-8 flex flex-wrap items-end justify-between gap-4">
         <div className="enter-slide-right">
-          <Link to="/" className="brand-mark font-display text-4xl tracking-tight md:text-5xl">
-            Docket
+          <Link
+            to="/"
+            className="brand-mark group inline-flex items-center gap-3"
+            aria-label="Docket home"
+          >
+            <img
+              src="/docket-mark.png"
+              alt=""
+              width={52}
+              height={52}
+              className="h-11 w-11 rounded-[0.85rem] shadow-sm ring-1 ring-[var(--color-line)] transition-[transform,box-shadow] duration-[var(--duration)] ease-[var(--ease-out-soft)] group-hover:-translate-y-0.5 group-hover:shadow-md md:h-[3.25rem] md:w-[3.25rem]"
+            />
+            <span className="font-display text-4xl tracking-tight md:text-5xl">
+              Docket
+            </span>
           </Link>
-          <p className="enter-fade delay-1 mt-1 text-sm text-[var(--color-ink-muted)]">
+          <p className="enter-fade delay-1 mt-1 pl-[3.75rem] text-sm text-[var(--color-ink-muted)] md:pl-[4.1rem]">
             Job application tracker
           </p>
         </div>
