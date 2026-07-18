@@ -1,0 +1,36 @@
+{
+  "name": "@docket/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev src/index.ts --port 8787",
+    "build": "wrangler deploy --dry-run --outdir=dist --env=\"\"",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:rls": "vitest run src/db/rls.test.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx src/db/migrate.ts",
+    "db:seed": "tsx src/db/seed.ts",
+    "db:rls:check": "tsx src/db/rls-check.ts",
+    "deploy:staging": "wrangler deploy --env staging",
+    "deploy:production": "wrangler deploy --env production"
+  },
+  "dependencies": {
+    "@docket/shared": "*",
+    "@neondatabase/serverless": "^1.0.1",
+    "better-auth": "^1.2.12",
+    "drizzle-orm": "^0.44.2",
+    "hono": "^4.8.3",
+    "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250620.0",
+    "@types/node": "^22.15.32",
+    "drizzle-kit": "^0.31.4",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4",
+    "wrangler": "^4.22.0"
+  }
+}

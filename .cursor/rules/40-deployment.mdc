@@ -1,0 +1,13 @@
+---
+description: Deploy and environment conventions
+globs: **/wrangler.toml,**/wrangler.jsonc,.github/**/*
+alwaysApply: false
+---
+
+# Deployment
+
+- Staging: branch `develop` → `baseer-staging` / `baseer-api-staging`
+- Production: tag `v*` → `baseer` / `baseer-api`
+- R2: `docket-documents-staging` / `docket-documents` — never public; presigned URLs only via `lib/r2.ts`
+- Cookie domain must match app host for Pages/Workers session sharing
+- Document ops in `docs/DEPLOYMENT.md` and `docs/RUNBOOK.md`

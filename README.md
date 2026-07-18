@@ -1,0 +1,36 @@
+# Docket
+
+Personal job application tracker for Baseer — kanban board, list view, notes/reminders, document storage, and stats.
+
+## Stack
+
+React 19 + Vite · Hono on Cloudflare Workers · Neon Postgres (Hyperdrive + Drizzle + RLS) · Better Auth · R2
+
+## Quick start
+
+```bash
+cp .env.example .env
+npm install
+npm run rules:sync
+npm run db:migrate   # requires DATABASE_URL
+npm run db:seed
+npm run dev
+```
+
+- Web: http://localhost:5173  
+- API: http://localhost:8787  
+
+## Scripts
+
+| Script | Purpose |
+|---|---|
+| `npm run dev` | Start web + API |
+| `npm run check` | Typecheck |
+| `npm test` | Vitest |
+| `npm run test:e2e` | Playwright |
+| `npm run test:rls` | RLS tests |
+| `npm run doctor` | Env/scaffold sanity |
+| `npm run ship-it` | check + test + build |
+| `npm run deploy:staging` / `deploy:production` | Cloudflare deploy |
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md), and [AGENTS.md](AGENTS.md).

@@ -1,0 +1,14 @@
+---
+description: Stack conventions for web and API
+globs: apps/**/*.{ts,tsx},packages/**/*.ts
+alwaysApply: false
+---
+
+# Stack
+
+- React 19 functional components + hooks only; Vite SPA
+- Tailwind v4 + shadcn/ui; single `index.css` token layer
+- Hono on Cloudflare Workers for API
+- Shared types/Zod in `packages/shared`
+- Scripts: `<domain>:<action>` (e.g. `db:migrate`); bare names for aggregates (`dev`, `build`, `check`)
+- Kanban drag: optimistic update, reconcile, roll back on failure

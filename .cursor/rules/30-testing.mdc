@@ -1,0 +1,12 @@
+---
+description: Testing expectations
+globs: **/*.{test,spec}.{ts,tsx},**/e2e/**/*
+alwaysApply: false
+---
+
+# Testing
+
+- Vitest for unit and RLS tests (`test`, `test:rls`)
+- Playwright for e2e (`test:e2e`)
+- RLS isolation is mandatory before shipping DB/route changes
+- Prefer testing behavior over implementation details

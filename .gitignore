@@ -1,0 +1,16 @@
+node_modules
+dist
+.turbo
+.wrangler
+.dev.vars
+.env
+.env.*
+!.env.example
+coverage
+playwright-report
+test-results
+*.log
+.DS_Store
+.vite
+*.local
+.cloudflare

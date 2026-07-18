@@ -1,0 +1,16 @@
+---
+description: Docket project overview and hard constraints
+globs:
+alwaysApply: true
+---
+
+# Docket project
+
+Personal job application tracker for Baseer. Standalone: own DB, own auth, own deployment.
+
+- Domains: `baseer.humza-butt.space` / `baseer-staging.humza-butt.space`
+- API: `baseer-api.humza-butt.space` / `baseer-api-staging.humza-butt.space`
+- Single-level CNAMEs only (free Universal SSL)
+- npm workspaces + Turborepo only — never pnpm/yarn
+- Free Cloudflare tier: no Containers, Queues, or Advanced Certificate Manager
+- Canonical agent docs: `AGENTS.md`. Sync rules with `npm run rules:sync`.

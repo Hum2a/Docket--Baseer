@@ -1,0 +1,36 @@
+{
+  "name": "docket",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Docket — personal job application tracker for Baseer",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "check": "turbo run check",
+    "test": "turbo run test",
+    "test:e2e": "npm run test:e2e --workspace=@docket/web",
+    "test:rls": "npm run test:rls --workspace=@docket/api",
+    "db:migrate": "npm run db:migrate --workspace=@docket/api",
+    "db:seed": "npm run db:seed --workspace=@docket/api",
+    "db:rls:check": "npm run db:rls:check --workspace=@docket/api",
+    "deploy:staging": "turbo run deploy:staging",
+    "deploy:production": "turbo run deploy:production",
+    "rules:sync": "node scripts/rules-sync.mjs",
+    "loc": "node scripts/loc.mjs",
+    "stats": "node scripts/stats.mjs",
+    "doctor": "node scripts/doctor.mjs",
+    "ship-it": "npm run check && npm test && npm run build"
+  },
+  "devDependencies": {
+    "turbo": "^2.5.4",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "npm@11.18.0"
+}

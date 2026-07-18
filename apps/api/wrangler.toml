@@ -1,0 +1,45 @@
+name = "docket-api"
+main = "src/index.ts"
+compatibility_date = "2025-06-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+APP_URL = "http://localhost:5173"
+COOKIE_DOMAIN = "localhost"
+BETTER_AUTH_URL = "http://localhost:8787"
+
+[[r2_buckets]]
+binding = "DOCUMENTS"
+bucket_name = "docket-documents-dev"
+preview_bucket_name = "docket-documents-dev"
+
+# Configure Hyperdrive IDs after creating them in Cloudflare:
+# [[hyperdrive]]
+# binding = "HYPERDRIVE"
+# id = "REPLACE_LOCAL_OR_DEV_HYPERDRIVE_ID"
+
+[env.staging]
+name = "docket-api-staging"
+vars = { APP_URL = "https://baseer-staging.humza-butt.space", COOKIE_DOMAIN = "baseer-staging.humza-butt.space", BETTER_AUTH_URL = "https://baseer-api-staging.humza-butt.space" }
+routes = [{ pattern = "baseer-api-staging.humza-butt.space", custom_domain = true }]
+
+[[env.staging.r2_buckets]]
+binding = "DOCUMENTS"
+bucket_name = "docket-documents-staging"
+
+# [[env.staging.hyperdrive]]
+# binding = "HYPERDRIVE"
+# id = "REPLACE_STAGING_HYPERDRIVE_ID"
+
+[env.production]
+name = "docket-api"
+vars = { APP_URL = "https://baseer.humza-butt.space", COOKIE_DOMAIN = "baseer.humza-butt.space", BETTER_AUTH_URL = "https://baseer-api.humza-butt.space" }
+routes = [{ pattern = "baseer-api.humza-butt.space", custom_domain = true }]
+
+[[env.production.r2_buckets]]
+binding = "DOCUMENTS"
+bucket_name = "docket-documents"
+
+# [[env.production.hyperdrive]]
+# binding = "HYPERDRIVE"
+# id = "REPLACE_PRODUCTION_HYPERDRIVE_ID"
