@@ -36,7 +36,8 @@ bucket_name = "docket-documents-staging"
 
 [env.production]
 name = "docket-api"
-vars = { APP_URL = "https://jobtracker.baseer.co.uk", API_URL = "https://jobtracker-api.baseer.co.uk", OWNER_ID = "seed-user-baseer" }
+# API_URL is the live Worker URL until jobtracker-api.baseer.co.uk is attached.
+vars = { APP_URL = "https://jobtracker.baseer.co.uk", API_URL = "https://docket-api.humzab1711.workers.dev", OWNER_ID = "seed-user-baseer" }
 # Custom domain: attach jobtracker-api.baseer.co.uk in the dashboard
 # after baseer.co.uk is on this Cloudflare account (wrangler routes fail otherwise).
 

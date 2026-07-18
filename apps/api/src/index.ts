@@ -9,13 +9,24 @@ import stats from "./routes/stats";
 
 const app = new Hono<{ Bindings: Env }>();
 
+function corsOrigin(origin: string | undefined, appUrl: string): string {
+  const allowed = new Set([
+    appUrl,
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://jobtracker.baseer.co.uk",
+    "https://jobtracker-staging.baseer.co.uk",
+  ]);
+  if (!origin) return appUrl;
+  if (allowed.has(origin)) return origin;
+  if (origin.endsWith(".pages.dev") || origin.endsWith(".workers.dev")) return origin;
+  return appUrl;
+}
+
 app.use(
   "*",
   cors({
-    origin: (origin, c) => {
-      const allowed = [c.env.APP_URL, "http://localhost:5173"];
-      return allowed.includes(origin) ? origin : c.env.APP_URL;
-    },
+    origin: (origin, c) => corsOrigin(origin, c.env.APP_URL),
     credentials: true,
     allowHeaders: ["Content-Type", "Authorization"],
     allowMethods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],

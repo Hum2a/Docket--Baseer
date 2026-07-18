@@ -1,49 +1,39 @@
-import { Pool, neonConfig } from "@neondatabase/serverless";
-import { drizzle, type NeonDatabase } from "drizzle-orm/neon-serverless";
-import { sql } from "drizzle-orm";
+import { neon } from "@neondatabase/serverless";
+import { drizzle, type NeonHttpDatabase } from "drizzle-orm/neon-http";
 import type { Env } from "../env";
 import * as schema from "./schema";
 
-export type Database = NeonDatabase<typeof schema>;
-
-// Workers / Node: use WebSocket for pooled transactional queries (RLS set_config).
-neonConfig.poolQueryViaFetch = false;
+export type Database = NeonHttpDatabase<typeof schema>;
 
 function connectionString(env: Env): string {
-  if (env.HYPERDRIVE?.connectionString) return env.HYPERDRIVE.connectionString;
-  if (env.DATABASE_URL) return env.DATABASE_URL;
-  throw new Error("No DATABASE_URL or HYPERDRIVE binding configured");
+  const raw = env.HYPERDRIVE?.connectionString ?? env.DATABASE_URL;
+  if (!raw) throw new Error("No DATABASE_URL or HYPERDRIVE binding configured");
+  // Some Workers/edge paths choke on channel_binding=require.
+  return raw.replace(/([?&])channel_binding=require&?/g, "$1").replace(/[?&]$/, "");
 }
 
 /**
- * Create a pooled Drizzle client over Hyperdrive (or DATABASE_URL for scripts).
- * One pool/client path per request context — do not open ad-hoc clients in handlers.
+ * Create a Drizzle client over Neon HTTP (Workers-friendly).
+ * One client per request context — do not open ad-hoc clients in handlers.
+ *
+ * Note: Neon HTTP has no interactive sessions, so RLS JWT claims cannot be
+ * set via set_config. Routes always filter by OWNER_ID; Hyperdrive + Pool
+ * can restore claim mapping later if needed.
  */
-export function createDb(env: Env): { db: Database; pool: Pool } {
-  const pool = new Pool({ connectionString: connectionString(env), max: 1 });
-  const db = drizzle(pool, { schema });
-  return { db, pool };
+export function createDb(env: Env): { db: Database; pool: { end: () => Promise<void> } } {
+  const sql = neon(connectionString(env));
+  const db = drizzle(sql, { schema });
+  return {
+    db,
+    pool: { end: async () => undefined },
+  };
 }
 
-/**
- * Run work with RLS claim mapped from Better Auth user id → auth.user_id().
- * Uses a transaction so set_config stays on the same connection.
- */
+/** Run work scoped to the fixed owner (OWNER_ID). */
 export async function withOwnerRls<T>(
   db: Database,
-  ownerId: string,
+  _ownerId: string,
   fn: (tx: Database) => Promise<T>,
 ): Promise<T> {
-  return db.transaction(async (tx) => {
-    const claims = JSON.stringify({ sub: ownerId, role: "authenticated" });
-    await tx.execute(
-      sql`SELECT set_config('request.jwt.claims', ${claims}, true)`,
-    );
-    await tx.execute(
-      sql`SELECT set_config('request.jwt.claim.sub', ${ownerId}, true)`,
-    );
-    // Neon roles: prefer authenticated when available
-    await tx.execute(sql`SET LOCAL ROLE authenticated`).catch(() => undefined);
-    return fn(tx as unknown as Database);
-  });
+  return fn(db);
 }

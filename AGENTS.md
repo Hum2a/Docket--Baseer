@@ -60,6 +60,13 @@ npm run db:seed
 npm run dev
 ```
 
+## Publish to Cloudflare
+
+```bash
+npm run cf:secrets -- production     # push DATABASE_URL from .env
+npm run publish:production           # secrets + deploy api/web + migrate/seed
+```
+
 ## Verification
 
 ```bash

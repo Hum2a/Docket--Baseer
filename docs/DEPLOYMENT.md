@@ -41,10 +41,27 @@ GitHub Actions:
 
 Use Cloudflare API credentials for the **baseer.co.uk** account (`CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID`).
 
-## Secrets
+## Secrets & publish
 
-Set via Cloudflare dashboard / `wrangler secret put` and GitHub Actions secrets:
+Non-secret vars (`APP_URL`, `API_URL`, `OWNER_ID`) live in [`apps/api/wrangler.toml`](../apps/api/wrangler.toml).
 
-- `DATABASE_URL` (or Hyperdrive)
-- `OWNER_ID` (defaults to `seed-user-baseer` in wrangler vars)
-- Hyperdrive config IDs
+`DATABASE_URL` is a Worker **secret** — push from local `.env`:
+
+```bash
+npm run cf:secrets -- production
+npm run cf:secrets -- staging
+```
+
+One-shot publish (secrets → deploy API → deploy web → migrate → seed):
+
+```bash
+npm run publish:production
+npm run publish:staging
+```
+
+Or set manually:
+
+```bash
+cd apps/api
+npx wrangler secret put DATABASE_URL --env production
+```
