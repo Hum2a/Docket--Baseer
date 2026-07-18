@@ -52,7 +52,8 @@ Either `{ "applications": [ ... ] }` or a bare `[ ... ]` array.
 | Field | Required | Notes |
 |---|---|---|
 | `company` | yes | string |
-| `roleTitle` | yes | string |
+| `roleTitle` | yes | string (position) |
+| `industry` | yes | free text, e.g. Technology, Fintech |
 | `status` | no | `wishlist` \| `applied` \| `interview` \| `offer` \| `rejected` (default `wishlist`) |
 | `location` | no | string |
 | `jobUrl` | no | valid URL |

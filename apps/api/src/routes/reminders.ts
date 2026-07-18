@@ -7,10 +7,20 @@ import { withOwner } from "../middleware/owner";
 import { withOwnerRls } from "../db/client";
 import { applications, reminders } from "../db/schema";
 import { serializeReminder } from "../lib/serialize";
+import { runReminderDigest } from "../lib/reminder-digest";
 
 const app = new Hono<{ Bindings: Env; Variables: AppVariables }>();
 
 app.use("*", withOwner);
+
+/** Manual trigger for the daily digest (same logic as cron). */
+app.post("/digest", async (c) => {
+  const { count, result } = await runReminderDigest(c.env);
+  if (!result.ok && "error" in result) {
+    return c.json({ error: result.error, count }, 502);
+  }
+  return c.json({ ok: true, count, result });
+});
 
 app.get("/", async (c) => {
   const userId = c.get("userId");

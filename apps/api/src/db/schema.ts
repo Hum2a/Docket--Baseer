@@ -44,6 +44,7 @@ export const applications = pgTable(
       .references(() => user.id, { onDelete: "cascade" }),
     company: text("company").notNull(),
     roleTitle: text("role_title").notNull(),
+    industry: text("industry").notNull().default("Unspecified"),
     location: text("location"),
     jobUrl: text("job_url"),
     status: applicationStatusEnum("status").notNull().default("wishlist"),

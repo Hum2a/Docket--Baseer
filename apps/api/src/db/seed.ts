@@ -40,6 +40,7 @@ async function main() {
         ownerId,
         company: "Acme Corp",
         roleTitle: "Software Engineer",
+        industry: "Technology",
         location: "Remote",
         status: "applied",
         appliedDate: new Date(),

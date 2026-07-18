@@ -3,6 +3,7 @@
     {
       "company": "Example Corp",
       "roleTitle": "Frontend Engineer",
+      "industry": "Technology",
       "location": "Remote",
       "jobUrl": "https://example.com/jobs/123",
       "status": "applied",
@@ -23,6 +24,7 @@
     {
       "company": "Startup Ltd",
       "roleTitle": "Full Stack Developer",
+      "industry": "Fintech",
       "status": "wishlist",
       "source": "Referral"
     }

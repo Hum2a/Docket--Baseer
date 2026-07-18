@@ -30,9 +30,21 @@ npm run dev
 
 Buckets stay private. Only short-lived (5–10 min) signed URLs from `apps/api/src/lib/r2.ts`.
 
-## Future: reminder digests
+## Reminder digests (Resend)
 
-Optional Phase 8 follow-up: daily Resend email listing due/overdue reminders. Not implemented in v1 — would require a scheduled Worker cron and Resend API key.
+Production/staging Workers run a cron at **08:00 UTC** (`0 8 * * *`) that emails incomplete reminders due today or overdue to `baseer@baseer.co.uk`.
+
+1. Verify the sending domain in [Resend](https://resend.com) for `@baseer.co.uk`.
+2. Put `RESEND_API_KEY` in root `.env` or `apps/api/.dev.vars`, then:
+   ```bash
+   npm run cf:secrets -- production RESEND_API_KEY
+   ```
+3. Optional vars in `wrangler.toml`: `REMINDER_EMAIL_TO`, `REMINDER_EMAIL_FROM`.
+4. Manual test (no wait for cron):
+   ```bash
+   curl -X POST https://docket-api.humzab1711.workers.dev/api/reminders/digest
+   ```
+   If the key is missing, the handler logs a skip and returns `{ skipped: true }` without failing the Worker.
 
 ## Incidents
 

@@ -6,6 +6,7 @@ import notes from "./routes/notes";
 import reminders from "./routes/reminders";
 import documents from "./routes/documents";
 import stats from "./routes/stats";
+import { runReminderDigest } from "./lib/reminder-digest";
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -52,4 +53,17 @@ app.onError((err, c) => {
   return c.json({ error: err.message ?? "Internal error" }, 500);
 });
 
-export default app;
+export default {
+  fetch: app.fetch,
+  async scheduled(
+    _controller: ScheduledController,
+    env: Env,
+    ctx: ExecutionContext,
+  ): Promise<void> {
+    ctx.waitUntil(
+      runReminderDigest(env).then((r) => {
+        console.log("[cron] reminder digest", r.count, r.result);
+      }),
+    );
+  },
+};

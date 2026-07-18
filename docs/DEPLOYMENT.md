@@ -45,12 +45,16 @@ Use Cloudflare API credentials for the **baseer.co.uk** account (`CLOUDFLARE_API
 
 Non-secret vars (`APP_URL`, `API_URL`, `OWNER_ID`) live in [`apps/api/wrangler.toml`](../apps/api/wrangler.toml).
 
-`DATABASE_URL` is a Worker **secret** — push from local `.env`:
+Worker **secrets** (`DATABASE_URL`, optional `RESEND_API_KEY` for reminder digests) — push from local `.env`:
 
 ```bash
 npm run cf:secrets -- production
 npm run cf:secrets -- staging
+# or one key:
+npm run cf:secrets -- production RESEND_API_KEY
 ```
+
+Verify the Resend domain for `@baseer.co.uk` before digests will deliver. See [RUNBOOK.md](./RUNBOOK.md).
 
 One-shot publish (secrets → deploy API → deploy web → migrate → seed):
 

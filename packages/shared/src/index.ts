@@ -21,6 +21,7 @@ export const applicationSchema = z.object({
   ownerId: z.string(),
   company: z.string().min(1),
   roleTitle: z.string().min(1),
+  industry: z.string().min(1),
   location: z.string().nullable(),
   jobUrl: z.string().url().nullable().or(z.literal("")).nullable(),
   status: applicationStatusSchema,
@@ -36,6 +37,7 @@ export type Application = z.infer<typeof applicationSchema>;
 export const createApplicationSchema = z.object({
   company: z.string().min(1).max(200),
   roleTitle: z.string().min(1).max(200),
+  industry: z.string().min(1).max(200),
   location: z.string().max(200).optional().nullable(),
   jobUrl: z.string().url().optional().nullable().or(z.literal("")),
   status: applicationStatusSchema.default("wishlist"),
@@ -116,6 +118,8 @@ export type CreateDocumentInput = z.infer<typeof createDocumentSchema>;
 export const statsSchema = z.object({
   total: z.number(),
   byStatus: z.record(applicationStatusSchema, z.number()),
+  byIndustry: z.array(z.object({ name: z.string(), count: z.number() })),
+  bySource: z.array(z.object({ name: z.string(), count: z.number() })),
   funnel: z.object({
     applied: z.number(),
     interview: z.number(),
@@ -124,6 +128,14 @@ export const statsSchema = z.object({
     interviewToOfferPct: z.number(),
     appliedToOfferPct: z.number(),
   }),
+  reminders: z.object({
+    overdue: z.number(),
+    dueSoon: z.number(),
+    completed: z.number(),
+    open: z.number(),
+  }),
+  openPipeline: z.number(),
+  avgPerWeek: z.number(),
   perWeek: z.array(z.object({ week: z.string(), count: z.number() })),
   perMonth: z.array(z.object({ month: z.string(), count: z.number() })),
 });

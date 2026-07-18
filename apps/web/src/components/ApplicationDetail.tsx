@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import {
   applicationStatuses,
   type Application,
@@ -19,10 +20,12 @@ type Props = {
 };
 
 export function ApplicationDetail({ applicationId }: Props) {
+  const navigate = useNavigate();
   const [app, setApp] = useState<Application | null>(null);
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const reminders = useReminders(applicationId);
   const documents = useDocuments(applicationId);
 
@@ -59,6 +62,18 @@ export function ApplicationDetail({ applicationId }: Props) {
     }
   };
 
+  const remove = async () => {
+    if (!app) return;
+    if (!confirm(`Delete application at ${app.company}? This cannot be undone.`)) return;
+    setDeleting(true);
+    try {
+      await api.applications.remove(app.id);
+      await navigate({ to: "/list" });
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   if (loading) {
     return <p className="text-sm text-[var(--color-ink-muted)]">Loading application…</p>;
   }
@@ -68,12 +83,25 @@ export function ApplicationDetail({ applicationId }: Props) {
 
   return (
     <div className="space-y-8">
-      <header className="space-y-3">
-        <p className="text-sm uppercase tracking-[0.2em] text-[var(--color-ink-muted)]">
-          Application
-        </p>
-        <h1 className="font-display text-3xl md:text-4xl">{app.company}</h1>
-        <p className="text-lg text-[var(--color-ink-muted)]">{app.roleTitle}</p>
+      <header className="flex flex-wrap items-start justify-between gap-4">
+        <div className="space-y-3">
+          <p className="text-sm uppercase tracking-[0.2em] text-[var(--color-ink-muted)]">
+            Application
+          </p>
+          <h1 className="font-display text-3xl md:text-4xl">{app.company}</h1>
+          <p className="text-lg text-[var(--color-ink-muted)]">
+            {app.roleTitle}
+            {app.industry ? ` · ${app.industry}` : ""}
+          </p>
+        </div>
+        <Button
+          type="button"
+          variant="danger"
+          disabled={deleting}
+          onClick={() => void remove()}
+        >
+          {deleting ? "Deleting…" : "Delete"}
+        </Button>
       </header>
 
       <form
@@ -84,6 +112,7 @@ export function ApplicationDetail({ applicationId }: Props) {
           void save({
             company: String(fd.get("company") ?? ""),
             roleTitle: String(fd.get("roleTitle") ?? ""),
+            industry: String(fd.get("industry") ?? ""),
             location: String(fd.get("location") ?? "") || null,
             jobUrl: String(fd.get("jobUrl") ?? "") || null,
             status: String(fd.get("status")) as Application["status"],
@@ -98,8 +127,16 @@ export function ApplicationDetail({ applicationId }: Props) {
           <Input name="company" defaultValue={app.company} required />
         </label>
         <label className="space-y-1 text-sm">
-          <span>Role</span>
+          <span>Position</span>
           <Input name="roleTitle" defaultValue={app.roleTitle} required />
+        </label>
+        <label className="space-y-1 text-sm">
+          <span>Industry</span>
+          <Input name="industry" defaultValue={app.industry} required />
+        </label>
+        <label className="space-y-1 text-sm">
+          <span>Salary range</span>
+          <Input name="salaryRange" defaultValue={app.salaryRange ?? ""} />
         </label>
         <label className="space-y-1 text-sm">
           <span>Location</span>
@@ -131,11 +168,7 @@ export function ApplicationDetail({ applicationId }: Props) {
             defaultValue={app.appliedDate ? app.appliedDate.slice(0, 10) : ""}
           />
         </label>
-        <label className="space-y-1 text-sm">
-          <span>Salary range</span>
-          <Input name="salaryRange" defaultValue={app.salaryRange ?? ""} />
-        </label>
-        <label className="space-y-1 text-sm">
+        <label className="space-y-1 text-sm md:col-span-2">
           <span>Source</span>
           <Input name="source" defaultValue={app.source ?? ""} />
         </label>
