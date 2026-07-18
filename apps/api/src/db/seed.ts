@@ -2,10 +2,15 @@ import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import { eq } from "drizzle-orm";
 import * as schema from "./schema";
+import { loadEnv } from "./load-env";
+
+loadEnv();
 
 const databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) {
-  console.error("DATABASE_URL is required for db:seed");
+  console.error(
+    "DATABASE_URL is required for db:seed.\nRun `npm run setup`, then set DATABASE_URL in `.env`.",
+  );
   process.exit(1);
 }
 

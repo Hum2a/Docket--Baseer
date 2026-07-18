@@ -15,12 +15,27 @@ ok("apps/web", existsSync("apps/web/package.json"));
 ok("apps/api", existsSync("apps/api/package.json"));
 ok("packages/shared", existsSync("packages/shared/package.json"));
 ok(".env.example", existsSync(".env.example"));
+ok("apps/api/.dev.vars.example", existsSync("apps/api/.dev.vars.example"));
+ok("apps/web/.env.example", existsSync("apps/web/.env.example"));
 ok("wrangler", existsSync("apps/api/wrangler.toml") || existsSync("apps/api/wrangler.jsonc"));
+ok(".env", existsSync(".env"), existsSync(".env") ? "" : "run npm run setup");
+ok(
+  "apps/api/.dev.vars",
+  existsSync("apps/api/.dev.vars"),
+  existsSync("apps/api/.dev.vars") ? "" : "run npm run setup",
+);
 
 const pkg = JSON.parse(readFileSync("package.json", "utf8"));
 ok("npm workspaces", Array.isArray(pkg.workspaces));
 ok("no pnpm lock", !existsSync("pnpm-lock.yaml"));
 ok("no yarn lock", !existsSync("yarn.lock"));
+
+if (existsSync(".env")) {
+  const env = readFileSync(".env", "utf8");
+  const hasDb = /^DATABASE_URL=.+/m.test(env);
+  const placeholder = /DATABASE_URL=.*user:pass@localhost/.test(env);
+  ok("DATABASE_URL set", hasDb && !placeholder, placeholder ? "still placeholder" : "");
+}
 
 let failed = 0;
 for (const c of checks) {
@@ -30,7 +45,7 @@ for (const c of checks) {
 }
 
 if (failed) {
-  console.error(`\nDoctor found ${failed} issue(s).`);
+  console.error(`\nDoctor found ${failed} issue(s). Run npm run setup if env files are missing.`);
   process.exit(1);
 }
 console.log("\nDoctor: all checks passed.");

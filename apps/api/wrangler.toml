@@ -7,16 +7,22 @@ compatibility_flags = ["nodejs_compat"]
 APP_URL = "http://localhost:5173"
 COOKIE_DOMAIN = "localhost"
 BETTER_AUTH_URL = "http://localhost:8787"
+# DATABASE_URL and BETTER_AUTH_SECRET live in .dev.vars (gitignored).
+# Do not put DB passwords in this file — use:
+#   local:     apps/api/.dev.vars
+#   deployed:  wrangler secret put DATABASE_URL
+#              (or Hyperdrive binding below)
 
 [[r2_buckets]]
 binding = "DOCUMENTS"
 bucket_name = "docket-documents-dev"
 preview_bucket_name = "docket-documents-dev"
 
-# Configure Hyperdrive IDs after creating them in Cloudflare:
+# Prefer Hyperdrive in staging/production instead of raw DATABASE_URL:
 # [[hyperdrive]]
 # binding = "HYPERDRIVE"
 # id = "REPLACE_LOCAL_OR_DEV_HYPERDRIVE_ID"
+# localConnectionString = "postgresql://..."  # optional local override via wrangler; still prefer .dev.vars
 
 [env.staging]
 name = "docket-api-staging"

@@ -3,9 +3,9 @@
 ## Local development
 
 ```bash
-cp .env.example .env
-# fill DATABASE_URL, BETTER_AUTH_SECRET
 npm install
+npm run setup          # creates .env, apps/api/.dev.vars, apps/web/.env; syncs secrets
+# edit .env and set DATABASE_URL if still a placeholder, then: npm run setup
 npm run db:migrate
 npm run db:seed
 npm run dev

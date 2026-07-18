@@ -9,10 +9,10 @@ React 19 + Vite · Hono on Cloudflare Workers · Neon Postgres (Hyperdrive + Dri
 ## Quick start
 
 ```bash
-cp .env.example .env
 npm install
-npm run rules:sync
-npm run db:migrate   # requires DATABASE_URL
+npm run setup          # env files, .dev.vars, auth secret, rules sync
+# set DATABASE_URL in .env if needed, then re-run setup
+npm run db:migrate
 npm run db:seed
 npm run dev
 ```

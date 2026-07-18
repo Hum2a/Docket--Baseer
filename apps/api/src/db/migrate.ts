@@ -2,10 +2,15 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Pool } from "@neondatabase/serverless";
+import { loadEnv } from "./load-env";
+
+loadEnv();
 
 const databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) {
-  console.error("DATABASE_URL is required for db:migrate");
+  console.error(
+    "DATABASE_URL is required for db:migrate. Run `npm run setup`, then set DATABASE_URL in `.env` and `apps/api/.dev.vars`.",
+  );
   process.exit(1);
 }
 

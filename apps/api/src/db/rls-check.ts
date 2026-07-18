@@ -1,8 +1,13 @@
 import { neon } from "@neondatabase/serverless";
+import { loadEnv } from "./load-env";
+
+loadEnv();
 
 const databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) {
-  console.error("DATABASE_URL is required for db:rls:check");
+  console.error(
+    "DATABASE_URL is required for db:rls:check.\nRun `npm run setup`, then set DATABASE_URL in `.env`.",
+  );
   process.exit(1);
 }
 

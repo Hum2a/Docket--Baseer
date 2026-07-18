@@ -50,6 +50,16 @@ docs/             ARCHITECTURE, RLS, DEPLOYMENT, RUNBOOK
 | App | `baseer-staging.humza-butt.space` | `baseer.humza-butt.space` |
 | API | `baseer-api-staging.humza-butt.space` | `baseer-api.humza-butt.space` |
 
+## Local setup
+
+```bash
+npm install
+npm run setup          # .env, apps/api/.dev.vars, apps/web/.env, rules sync
+npm run db:migrate
+npm run db:seed
+npm run dev
+```
+
 ## Verification
 
 ```bash
