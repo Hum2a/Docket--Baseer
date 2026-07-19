@@ -12,7 +12,9 @@ import {
   ensureDefaultNotificationEmail,
   listNotificationEmails,
   normalizeEmail,
+  resolveNotificationRecipients,
 } from "../lib/notification-recipients";
+import { sendTestNotificationEmail } from "../lib/resend";
 
 const app = new Hono<{ Bindings: Env; Variables: AppVariables }>();
 
@@ -62,6 +64,22 @@ app.post("/", async (c) => {
     return c.json({ error: "Email already in the list" }, 409);
   }
   return c.json({ data: serialize(created.row) }, 201);
+});
+
+app.post("/test", async (c) => {
+  const userId = c.get("userId");
+  const db = c.get("db");
+  const recipients = await withOwnerRls(db, userId, (tx) =>
+    resolveNotificationRecipients(tx, c.env),
+  );
+  const result = await sendTestNotificationEmail(c.env, recipients);
+  if (!result.ok && "error" in result) {
+    return c.json({ error: result.error, recipients }, 502);
+  }
+  if (!result.ok && "skipped" in result) {
+    return c.json({ ok: false, skipped: true, reason: result.reason, recipients }, 400);
+  }
+  return c.json({ ok: true, recipients, result });
 });
 
 app.delete("/:id", async (c) => {

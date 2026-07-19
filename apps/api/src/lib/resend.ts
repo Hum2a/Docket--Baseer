@@ -195,6 +195,58 @@ export async function sendReminderDigest(
   return sendResendEmail(env, { to: recipients, subject, html, text }, "digest");
 }
 
+/** Settings “Send test email” — same Recipients list as live alerts. */
+export async function sendTestNotificationEmail(
+  env: Env,
+  recipients: string[],
+): Promise<SendResult> {
+  const now = new Date();
+  const subject = "Docket: test notification";
+  const text = [
+    "This is a Docket test email.",
+    "",
+    `Sent at: ${formatDateTime(now)}`,
+    `Recipients: ${recipients.join(", ")}`,
+    "",
+    `Open Docket: ${env.APP_URL}`,
+    "",
+    "If you received this, Resend + your notification list are working.",
+  ].join("\n");
+
+  const html = `<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:0;background:#f3f6f9;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:#1a2332;">
+  <div style="max-width:560px;margin:0 auto;padding:32px 16px;">
+    <div style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:#0f6e56;font-weight:600;margin-bottom:12px;">Docket</div>
+    <h1 style="margin:0 0 8px;font-size:24px;line-height:1.25;font-weight:700;">Test notification</h1>
+    <p style="margin:0 0 24px;font-size:16px;color:#5a6578;">
+      If you received this, Resend and your notification list are working.
+    </p>
+    <div style="background:#ffffff;border:1px solid #d5dde8;border-radius:12px;overflow:hidden;">
+      <table style="border-collapse:collapse;width:100%;font-size:14px;">
+        <tr>
+          <td style="padding:10px 12px;border-bottom:1px solid #e5e7eb;color:#5a6578;width:140px;">Sent at</td>
+          <td style="padding:10px 12px;border-bottom:1px solid #e5e7eb;">${escapeHtml(formatDateTime(now))}</td>
+        </tr>
+        <tr>
+          <td style="padding:10px 12px;color:#5a6578;vertical-align:top;">Recipients</td>
+          <td style="padding:10px 12px;">${escapeHtml(recipients.join(", "))}</td>
+        </tr>
+      </table>
+    </div>
+    <p style="margin:28px 0 0;">
+      <a href="${escapeHtml(env.APP_URL)}"
+         style="display:inline-block;background:#0f6e56;color:#ffffff;text-decoration:none;padding:12px 18px;border-radius:8px;font-size:14px;font-weight:600;">
+        Open Docket
+      </a>
+    </p>
+  </div>
+</body>
+</html>`;
+
+  return sendResendEmail(env, { to: recipients, subject, html, text }, "test-email");
+}
+
 function formatDate(d: Date): string {
   return d.toISOString().slice(0, 10);
 }

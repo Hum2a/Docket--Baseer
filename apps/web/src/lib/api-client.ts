@@ -112,5 +112,13 @@ export const api = {
       request<{ ok: boolean }>(`/api/notification-emails/${id}`, {
         method: "DELETE",
       }),
+    sendTest: () =>
+      request<{
+        ok: boolean;
+        recipients: string[];
+        result?: { ok: true; id?: string };
+        skipped?: boolean;
+        reason?: string;
+      }>("/api/notification-emails/test", { method: "POST" }),
   },
 };

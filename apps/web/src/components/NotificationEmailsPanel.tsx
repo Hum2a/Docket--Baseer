@@ -9,7 +9,9 @@ export function NotificationEmailsPanel() {
   const [loading, setLoading] = useState(true);
   const [value, setValue] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [testing, setTesting] = useState(false);
   const [removingId, setRemovingId] = useState<string | null>(null);
 
   const refresh = async () => {
@@ -35,6 +37,7 @@ export function NotificationEmailsPanel() {
     if (!email) return;
     setSaving(true);
     setError(null);
+    setSuccess(null);
     try {
       const res = await api.notificationEmails.create({ email });
       setEmails((prev) => [...prev, res.data]);
@@ -49,6 +52,7 @@ export function NotificationEmailsPanel() {
   const remove = async (id: string) => {
     setRemovingId(id);
     setError(null);
+    setSuccess(null);
     try {
       await api.notificationEmails.remove(id);
       setEmails((prev) => prev.filter((row) => row.id !== id));
@@ -59,14 +63,38 @@ export function NotificationEmailsPanel() {
     }
   };
 
+  const sendTest = async () => {
+    setTesting(true);
+    setError(null);
+    setSuccess(null);
+    try {
+      const res = await api.notificationEmails.sendTest();
+      setSuccess(`Test email sent to ${res.recipients.join(", ")}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to send test email");
+    } finally {
+      setTesting(false);
+    }
+  };
+
   return (
     <section className="enter-up space-y-4">
-      <div>
-        <h2 className="font-display text-xl">Notification emails</h2>
-        <p className="mt-1 text-sm text-[var(--color-ink-muted)]">
-          Application alerts and daily reminder digests are sent to everyone on this
-          list. At least one address is required.
-        </p>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h2 className="font-display text-xl">Notification emails</h2>
+          <p className="mt-1 text-sm text-[var(--color-ink-muted)]">
+            Application alerts and daily reminder digests are sent to everyone on this
+            list. At least one address is required.
+          </p>
+        </div>
+        <Button
+          type="button"
+          variant="secondary"
+          disabled={testing || loading || emails.length === 0}
+          onClick={() => void sendTest()}
+        >
+          {testing ? "Sending…" : "Send test email"}
+        </Button>
       </div>
 
       <form
@@ -87,6 +115,7 @@ export function NotificationEmailsPanel() {
       </form>
 
       {error ? <p className="text-sm text-[var(--color-danger)]">{error}</p> : null}
+      {success ? <p className="text-sm text-[var(--color-accent)]">{success}</p> : null}
 
       {loading ? (
         <p className="text-sm text-[var(--color-ink-muted)]">Loading emails…</p>
