@@ -3,6 +3,7 @@ import type { Env } from "../env";
 import { createDb } from "../db/client";
 import { applications, reminders } from "../db/schema";
 import { sendReminderDigest, type DigestReminderRow } from "./resend";
+import { resolveNotificationRecipients } from "./notification-recipients";
 
 /** End of the current UTC calendar day. */
 export function endOfTodayUtc(now = new Date()): Date {
@@ -54,7 +55,8 @@ export async function runReminderDigest(env: Env): Promise<{
       }))
       .sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
 
-    const result = await sendReminderDigest(env, items);
+    const recipients = await resolveNotificationRecipients(db, env);
+    const result = await sendReminderDigest(env, items, recipients);
     return { count: items.length, result };
   } finally {
     await pool.end();

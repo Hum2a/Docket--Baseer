@@ -1,5 +1,6 @@
 import { AllRemindersPanel } from "@/components/AllRemindersPanel";
 import { DocumentUploader } from "@/components/DocumentUploader";
+import { NotificationEmailsPanel } from "@/components/NotificationEmailsPanel";
 import { useApplications } from "@/hooks/useApplications";
 import { useDocuments } from "@/hooks/useDocuments";
 import { useReminders } from "@/hooks/useReminders";
@@ -14,9 +15,11 @@ export function SettingsPage() {
       <div className="enter-up">
         <h2 className="font-display text-2xl">Settings</h2>
         <p className="enter-fade delay-1 mt-1 text-sm text-[var(--color-ink-muted)]">
-          Manage reminders and document templates for this single-owner instance.
+          Manage notification emails, reminders, and document templates.
         </p>
       </div>
+
+      <NotificationEmailsPanel />
 
       <AllRemindersPanel
         reminders={reminders.reminders}

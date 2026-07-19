@@ -133,6 +133,26 @@ export const documents = pgTable(
   ],
 ).enableRLS();
 
+/** Recipients for application + reminder notification emails. */
+export const notificationEmails = pgTable(
+  "notification_emails",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    ownerId: text("owner_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    email: text("email").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    crudPolicy({
+      role: authenticatedRole,
+      read: authUid(table.ownerId),
+      modify: authUid(table.ownerId),
+    }),
+  ],
+).enableRLS();
+
 export const applicationsRelations = relations(applications, ({ many }) => ({
   notes: many(notes),
   reminders: many(reminders),

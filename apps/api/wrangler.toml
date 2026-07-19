@@ -22,7 +22,7 @@ preview_bucket_name = "docket-documents-dev"
 
 [env.staging]
 name = "docket-api-staging"
-vars = { APP_URL = "https://docket-staging.baseer.co.uk", API_URL = "https://docket-api-staging.baseer.co.uk", OWNER_ID = "seed-user-baseer", REMINDER_EMAIL_TO = "baseer@baseer.co.uk", REMINDER_EMAIL_FROM = "Docket <reminders@baseer.co.uk>" }
+vars = { APP_URL = "https://docket-staging.baseer.co.uk", API_URL = "https://docket-api-staging.baseer.co.uk", OWNER_ID = "seed-user-baseer", REMINDER_EMAIL_TO = "Djbas8@gmail.com", REMINDER_EMAIL_FROM = "Docket <reminders@baseer.co.uk>" }
 # Custom domain: attach docket-api-staging.baseer.co.uk in the dashboard when ready.
 
 [[env.staging.r2_buckets]]
@@ -39,7 +39,7 @@ crons = ["0 8 * * *"]
 [env.production]
 name = "docket-api"
 # API_URL stays on workers.dev until docket-api.baseer.co.uk is attached.
-vars = { APP_URL = "https://docket.baseer.co.uk", API_URL = "https://docket-api.humzab1711.workers.dev", OWNER_ID = "seed-user-baseer", REMINDER_EMAIL_TO = "baseer@baseer.co.uk", REMINDER_EMAIL_FROM = "Docket <reminders@baseer.co.uk>" }
+vars = { APP_URL = "https://docket.baseer.co.uk", API_URL = "https://docket-api.humzab1711.workers.dev", OWNER_ID = "seed-user-baseer", REMINDER_EMAIL_TO = "Djbas8@gmail.com", REMINDER_EMAIL_FROM = "Docket <reminders@baseer.co.uk>" }
 # Custom domain: attach docket-api.baseer.co.uk in the dashboard when ready.
 
 [[env.production.r2_buckets]]

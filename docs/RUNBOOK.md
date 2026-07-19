@@ -32,7 +32,7 @@ Buckets stay private. Only short-lived (5–10 min) signed URLs from `apps/api/s
 
 ## Email notifications (Resend)
 
-Recipient defaults to `baseer@baseer.co.uk` (`REMINDER_EMAIL_TO` / `REMINDER_EMAIL_FROM` in `wrangler.toml`).
+Recipients are managed in **Settings → Notification emails** (DB list). Default seed / fallback: `Djbas8@gmail.com`. From address: `REMINDER_EMAIL_FROM` in `wrangler.toml` (e.g. `Docket <reminders@baseer.co.uk>`).
 
 ### New application (Claude Code / UI / import)
 

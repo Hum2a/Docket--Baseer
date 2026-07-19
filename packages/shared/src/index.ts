@@ -142,6 +142,23 @@ export const statsSchema = z.object({
 
 export type Stats = z.infer<typeof statsSchema>;
 
+export const notificationEmailSchema = z.object({
+  id: z.string().uuid(),
+  ownerId: z.string(),
+  email: z.string().email(),
+  createdAt: z.string(),
+});
+
+export type NotificationEmail = z.infer<typeof notificationEmailSchema>;
+
+export const createNotificationEmailSchema = z.object({
+  email: z.string().email().max(320),
+});
+
+export type CreateNotificationEmailInput = z.infer<
+  typeof createNotificationEmailSchema
+>;
+
 export const KANBAN_COLUMNS: { status: ApplicationStatus; label: string }[] = [
   { status: "wishlist", label: "Wishlist" },
   { status: "applied", label: "Applied" },

@@ -6,6 +6,7 @@ import notes from "./routes/notes";
 import reminders from "./routes/reminders";
 import documents from "./routes/documents";
 import stats from "./routes/stats";
+import notificationEmails from "./routes/notification-emails";
 import { runReminderDigest } from "./lib/reminder-digest";
 
 const app = new Hono<{ Bindings: Env }>();
@@ -44,6 +45,7 @@ app.route("/api/notes", notes);
 app.route("/api/reminders", reminders);
 app.route("/api/documents", documents);
 app.route("/api/stats", stats);
+app.route("/api/notification-emails", notificationEmails);
 
 app.onError((err, c) => {
   console.error(err);

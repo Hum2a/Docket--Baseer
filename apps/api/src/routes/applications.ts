@@ -11,6 +11,7 @@ import { withOwnerRls } from "../db/client";
 import { applications } from "../db/schema";
 import { serializeApplication } from "../lib/serialize";
 import { sendApplicationCreatedEmail } from "../lib/resend";
+import { resolveNotificationRecipients } from "../lib/notification-recipients";
 
 const app = new Hono<{ Bindings: Env; Variables: AppVariables }>();
 
@@ -63,9 +64,12 @@ app.post("/", async (c) => {
       .returning(),
   );
   const created = serializeApplication(rows[0]!);
+  const recipients = await withOwnerRls(db, userId, (tx) =>
+    resolveNotificationRecipients(tx, c.env),
+  );
   c.executionCtx.waitUntil(
-    sendApplicationCreatedEmail(c.env, created).then((result) => {
-      console.log("[application-email]", created.id, result);
+    sendApplicationCreatedEmail(c.env, created, recipients).then((result) => {
+      console.log("[application-email]", created.id, recipients, result);
     }),
   );
   return c.json({ data: created }, 201);

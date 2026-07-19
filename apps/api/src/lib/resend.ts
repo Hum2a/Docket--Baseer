@@ -1,5 +1,6 @@
 import type { Env } from "../env";
 import type { Application } from "@docket/shared";
+import { DEFAULT_NOTIFICATION_EMAIL } from "./notification-recipients";
 
 export type DigestReminderRow = {
   company: string;
@@ -13,24 +14,22 @@ type SendResult =
   | { ok: false; skipped: true; reason: string }
   | { ok: false; error: string };
 
-function mailConfig(env: Env) {
-  return {
-    apiKey: env.RESEND_API_KEY,
-    to: env.REMINDER_EMAIL_TO ?? "baseer@baseer.co.uk",
-    from: env.REMINDER_EMAIL_FROM ?? "Docket <reminders@baseer.co.uk>",
-  };
-}
-
 async function sendResendEmail(
   env: Env,
-  payload: { subject: string; html: string; text: string },
+  payload: { to: string[]; subject: string; html: string; text: string },
   logTag: string,
 ): Promise<SendResult> {
-  const { apiKey, to, from } = mailConfig(env);
+  const apiKey = env.RESEND_API_KEY;
   if (!apiKey) {
     console.log(`[${logTag}] RESEND_API_KEY not set — skipping email send`);
     return { ok: false, skipped: true, reason: "RESEND_API_KEY not configured" };
   }
+
+  const to =
+    payload.to.length > 0
+      ? payload.to
+      : [env.REMINDER_EMAIL_TO?.trim() || DEFAULT_NOTIFICATION_EMAIL];
+  const from = env.REMINDER_EMAIL_FROM ?? "Docket <reminders@baseer.co.uk>";
 
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -40,7 +39,7 @@ async function sendResendEmail(
     },
     body: JSON.stringify({
       from,
-      to: [to],
+      to,
       subject: payload.subject,
       html: payload.html,
       text: payload.text,
@@ -54,14 +53,15 @@ async function sendResendEmail(
   }
 
   const data = (await res.json()) as { id?: string };
-  console.log(`[${logTag}] sent`, data.id, "to", to);
+  console.log(`[${logTag}] sent`, data.id, "to", to.join(", "));
   return { ok: true, id: data.id };
 }
 
-/** Notify Baseer when Claude (or anyone) logs a new application. */
+/** Notify when Claude (or anyone) logs a new application. */
 export async function sendApplicationCreatedEmail(
   env: Env,
   app: Application,
+  recipients: string[],
 ): Promise<SendResult> {
   const detailUrl = `${env.APP_URL.replace(/\/$/, "")}/applications/${app.id}`;
   const headline = `You've been applied for ${app.roleTitle}`;
@@ -133,12 +133,17 @@ export async function sendApplicationCreatedEmail(
 </body>
 </html>`;
 
-  return sendResendEmail(env, { subject, html, text }, "application-email");
+  return sendResendEmail(
+    env,
+    { to: recipients, subject, html, text },
+    "application-email",
+  );
 }
 
 export async function sendReminderDigest(
   env: Env,
   items: DigestReminderRow[],
+  recipients: string[],
 ): Promise<SendResult> {
   if (items.length === 0) {
     console.log("[digest] no due/overdue reminders — skipping email");
@@ -187,7 +192,7 @@ export async function sendReminderDigest(
   <p style="margin-top:24px;"><a href="${escapeHtml(env.APP_URL)}">Open Docket</a></p>
 </body></html>`;
 
-  return sendResendEmail(env, { subject, html, text }, "digest");
+  return sendResendEmail(env, { to: recipients, subject, html, text }, "digest");
 }
 
 function formatDate(d: Date): string {

@@ -3,9 +3,11 @@ import type {
   CreateApplicationInput,
   CreateDocumentInput,
   CreateNoteInput,
+  CreateNotificationEmailInput,
   CreateReminderInput,
   Document,
   Note,
+  NotificationEmail,
   Reminder,
   Stats,
   UpdateApplicationInput,
@@ -98,5 +100,17 @@ export const api = {
   },
   stats: {
     get: () => request<{ data: Stats }>("/api/stats"),
+  },
+  notificationEmails: {
+    list: () => request<{ data: NotificationEmail[] }>("/api/notification-emails"),
+    create: (body: CreateNotificationEmailInput) =>
+      request<{ data: NotificationEmail }>("/api/notification-emails", {
+        method: "POST",
+        body: JSON.stringify(body),
+      }),
+    remove: (id: string) =>
+      request<{ ok: boolean }>(`/api/notification-emails/${id}`, {
+        method: "DELETE",
+      }),
   },
 };
