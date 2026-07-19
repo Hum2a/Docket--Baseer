@@ -10,6 +10,7 @@ import { withOwner } from "../middleware/owner";
 import { withOwnerRls } from "../db/client";
 import { applications } from "../db/schema";
 import { serializeApplication } from "../lib/serialize";
+import { sendApplicationCreatedEmail } from "../lib/resend";
 
 const app = new Hono<{ Bindings: Env; Variables: AppVariables }>();
 
@@ -61,7 +62,13 @@ app.post("/", async (c) => {
       })
       .returning(),
   );
-  return c.json({ data: serializeApplication(rows[0]!) }, 201);
+  const created = serializeApplication(rows[0]!);
+  c.executionCtx.waitUntil(
+    sendApplicationCreatedEmail(c.env, created).then((result) => {
+      console.log("[application-email]", created.id, result);
+    }),
+  );
+  return c.json({ data: created }, 201);
 });
 
 app.patch("/:id", async (c) => {

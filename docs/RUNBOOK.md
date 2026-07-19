@@ -30,21 +30,33 @@ npm run dev
 
 Buckets stay private. Only short-lived (5–10 min) signed URLs from `apps/api/src/lib/r2.ts`.
 
-## Reminder digests (Resend)
+## Email notifications (Resend)
 
-Production/staging Workers run a cron at **08:00 UTC** (`0 8 * * *`) that emails incomplete reminders due today or overdue to `baseer@baseer.co.uk`.
+Recipient defaults to `baseer@baseer.co.uk` (`REMINDER_EMAIL_TO` / `REMINDER_EMAIL_FROM` in `wrangler.toml`).
+
+### New application (Claude Code / UI / import)
+
+Every `POST /api/applications` sends a bespoke email:
+
+- Subject: `Docket: You've been applied for {role} at {company}`
+- Body: company, role, industry, status, salary, location, source, applied date, job URL, link to the detail page
+
+Fires for board create, API create, and `npm run data:import` (same endpoint). Email is sent via `waitUntil` so create still succeeds if Resend fails.
+
+### Reminder digests
+
+Production/staging Workers run a cron at **08:00 UTC** (`0 8 * * *`) that emails incomplete reminders due today or overdue.
 
 1. Verify the sending domain in [Resend](https://resend.com) for `@baseer.co.uk`.
 2. Put `RESEND_API_KEY` in root `.env` or `apps/api/.dev.vars`, then:
    ```bash
    npm run cf:secrets -- production RESEND_API_KEY
    ```
-3. Optional vars in `wrangler.toml`: `REMINDER_EMAIL_TO`, `REMINDER_EMAIL_FROM`.
-4. Manual test (no wait for cron):
+3. Manual digest test:
    ```bash
    curl -X POST https://docket-api.humzab1711.workers.dev/api/reminders/digest
    ```
-   If the key is missing, the handler logs a skip and returns `{ skipped: true }` without failing the Worker.
+   If the key is missing, sends are skipped with a clear log (create/digest still succeed).
 
 ## Incidents
 
